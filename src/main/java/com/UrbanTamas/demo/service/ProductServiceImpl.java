@@ -23,4 +23,12 @@ public class ProductServiceImpl implements ProductService {
     public Optional<ProductEntity> getProduct(Integer id) {
         return productRepository.findById(id);
     }
+
+    @Override
+    public Optional<ProductEntity> toggleFavorite(Integer id) {
+        return productRepository.findById(id).map(product -> {
+            product.setFavourite(!product.getFavourite());
+            return productRepository.save(product);
+        });
+    }
 }

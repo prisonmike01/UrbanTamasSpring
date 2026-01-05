@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface ProductService {
     List<ProductEntity> getAllProducts();
     Optional<ProductEntity> getProduct(Integer id);
+    Optional<ProductEntity> toggleFavorite(Integer id);
 }

@@ -6,6 +6,7 @@ import com.UrbanTamas.demo.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@Log4j2
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -27,7 +29,10 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest request, HttpServletRequest httpRequest) {
+        log.info("Register attempt for email: {}", request.getEmail());
+
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            log.warn("Failed Register attempt for email: {}", request.getEmail());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email in use");
         }
 
@@ -42,18 +47,24 @@ public class AuthController {
         // auto login
         createSession(httpRequest, savedUser);
 
+        log.info("User {} registered successfully", request.getEmail());
         return ResponseEntity.ok(savedUser);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request, HttpServletRequest httpRequest) {
+        log.info("Logging attempt for email: {}", request.getEmail());
+
         Optional<UserEntity> userOpt = userRepository.findByEmail(request.getEmail());
 
         if (userOpt.isPresent() && passwordEncoder.matches(request.getPassword(), userOpt.get().getPassword())) {
+            log.info("User {} logged in successfully", request.getEmail());
+
             createSession(httpRequest, userOpt.get());
             return ResponseEntity.ok(userOpt.get());
         }
 
+        log.warn("Failed login attempt for email: {}", request.getEmail());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
 

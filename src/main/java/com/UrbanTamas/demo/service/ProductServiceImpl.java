@@ -6,11 +6,13 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,5 +66,23 @@ public class ProductServiceImpl implements ProductService {
             product.setFavourite(!product.getFavourite());
             return productRepository.save(product);
         });
+    }
+
+    @Override
+    public List<ProductEntity> getRelatedProducts(Integer id) {
+        return productRepository.findById(id)
+                .map(product -> {
+                    if (product.getTypes() == null || product.getTypes().isEmpty()) {
+                        return Collections.<ProductEntity>emptyList();
+                    }
+                    // Fetch top 4 related products
+                    Page<ProductEntity> page = productRepository.findDistinctByTypesInAndIdNot(
+                            product.getTypes(),
+                            id,
+                            PageRequest.of(0, 4)
+                    );
+                    return page.getContent();
+                })
+                .orElse(Collections.emptyList());
     }
 }

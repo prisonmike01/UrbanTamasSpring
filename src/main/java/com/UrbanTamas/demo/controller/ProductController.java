@@ -48,4 +48,10 @@ public class ProductController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/{id}/related")
+    public ResponseEntity<List<ProductEntity>> getRelatedProducts(@PathVariable Integer id) {
+        List<ProductEntity> related = productService.getRelatedProducts(id);
+        return ResponseEntity.ok(related);
+    }
 }

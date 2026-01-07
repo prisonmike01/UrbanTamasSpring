@@ -11,4 +11,5 @@ public interface ProductService {
     Page<ProductEntity> getProducts(String name, Boolean favorite, Double minPrice, Double maxPrice, List<String> types, Pageable pageable);
     Optional<ProductEntity> getProduct(Integer id);
     Optional<ProductEntity> toggleFavorite(Integer id);
+    List<ProductEntity> getRelatedProducts(Integer id);
 }

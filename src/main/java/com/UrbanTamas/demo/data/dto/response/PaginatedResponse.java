@@ -1,4 +1,4 @@
-package com.UrbanTamas.demo.data.dto;
+package com.UrbanTamas.demo.data.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

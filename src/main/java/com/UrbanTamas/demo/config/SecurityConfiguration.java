@@ -25,9 +25,10 @@ public class SecurityConfiguration {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
-                        config.setAllowedOrigins(List.of("*"));
-                        config.setAllowedMethods(List.of("*"));
+                        config.setAllowedOrigins(List.of("http://localhost:4200"));
+                        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                         config.setAllowedHeaders(List.of("*"));
+                        config.setAllowCredentials(true);
                         return config;
                     }
                 })).csrf(AbstractHttpConfigurer::disable)
@@ -35,7 +36,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
 
         return http.build();

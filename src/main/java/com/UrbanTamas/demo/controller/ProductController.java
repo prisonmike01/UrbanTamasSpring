@@ -1,6 +1,6 @@
 package com.UrbanTamas.demo.controller;
 
-import com.UrbanTamas.demo.data.dto.PaginatedResponse;
+import com.UrbanTamas.demo.data.dto.response.PaginatedResponse;
 import com.UrbanTamas.demo.data.entity.ProductEntity;
 import com.UrbanTamas.demo.service.ProductService;
 import lombok.RequiredArgsConstructor;
